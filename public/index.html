@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Synaptix Matrix • 3D Digital Public Library & Management System</title>
+  <meta name="description" content="Next-generation 3D Digital Public Library platform for VTU Engineering, PUC, SSLC, and Universal Knowledge." />
+
+  <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- External CDNs: GSAP, Chart.js, Lucide Icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- =========================================================================
+       FLOATING GLASS NAVIGATION BAR
+       ========================================================================= -->
+  <nav class="nav-container">
+    <div class="nav-brand" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+      <div class="brand-icon-wrapper">
+        <i data-lucide="layers"></i>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">SYNAPTIX</span>
+        <span class="brand-subtitle">Digital Public Library</span>
+      </div>
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="#hero" class="nav-link active"><i data-lucide="home"></i> Home</a></li>
+      <li><a href="#explore" class="nav-link"><i data-lucide="grid"></i> Explore Shelf</a></li>
+      <li><a href="#vtu" class="nav-link"><i data-lucide="cpu"></i> VTU Portal</a></li>
+      <li><a href="#puc" class="nav-link"><i data-lucide="graduation-cap"></i> PUC & 10th</a></li>
+      <li><a href="#science" class="nav-link"><i data-lucide="atom"></i> Science</a></li>
+      <li><a href="#dashboard" class="nav-link" id="nav-dashboard-link"><i data-lucide="layout-dashboard"></i> Student Matrix</a></li>
+      <li><a href="#admin" class="nav-link" id="nav-admin-link" style="display: none;"><i data-lucide="shield"></i> Management</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <!-- Search Trigger -->
+      <div class="search-trigger-pill trigger-search-modal">
+        <i data-lucide="search" style="width: 15px; height: 15px;"></i>
+        <span>Search books, codes...</span>
+        <span class="search-kbd">Ctrl K</span>
+      </div>
+
+      <!-- User Profile Badge (When logged in) -->
+      <div class="user-profile-badge" id="nav-user-badge" style="display: none;" onclick="window.location.hash='#dashboard'">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Avatar" class="user-avatar-img" id="nav-user-avatar" />
+        <span class="user-name-text" id="nav-user-name">Alex</span>
+        <span class="role-tag-mini" id="nav-user-role">Student</span>
+      </div>
+
+      <!-- Auth Trigger Button -->
+      <button class="nav-auth-btn" id="nav-auth-btn" onclick="window.LibraryApp.authModule.openAuthModal('login')">
+        Sign In
+      </button>
+
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- =========================================================================
+       SECTION 1: HERO SECTION WITH 3D CANVAS & BACKGROUND VIDEO
+       ========================================================================= -->
+  <section class="hero-section" id="hero">
+    <!-- Background Video Layer — lazy loaded, plays only when visible -->
+    <div class="hero-media-wrapper">
+      <video class="hero-video-bg" id="hero-bg-video" loop muted playsinline preload="none" poster="assets/images/synaptix-reference.png">
+        <source src="assets/videos/hero-book-floating.mp4" type="video/mp4" />
+      </video>
+      <div class="hero-video-overlay"></div>
+    </div>
+
+    <!-- 3D Three.js Interactive Canvas Container -->
+    <div id="webgl-canvas-container"></div>
+
+    <!-- Hero Content Overlay -->
+    <div class="hero-content">
+      <div class="hero-badge-pill">
+        <span class="pulse-dot"></span>
+        <span>AI Active • Karnataka Digital Academic Matrix</span>
+      </div>
+
+      <h1 class="hero-heading">
+        A Universe of Knowledge,<br />One Click Away.
+      </h1>
+
+      <p class="hero-subtitle">
+        Karnataka's premier public digital knowledge repository. Seamlessly explore thousands of authenticated VTU Engineering, PUC, SSLC, and universal scientific texts with cinematic 3D navigation.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#explore" class="btn-primary-glow">
+          <i data-lucide="compass"></i> Explore 3D Library
+        </a>
+        <button class="btn-secondary-glass trigger-search-modal">
+          <i data-lucide="search"></i> Discover Books
+        </button>
+      </div>
+
+      <!-- Live Statistics Strip -->
+      <div class="hero-metrics-strip">
+        <div class="hero-metric-item">
+          <span class="metric-val">50,000+</span>
+          <span class="metric-lbl">Digital Books</span>
+        </div>
+        <div class="hero-metric-item">
+          <span class="metric-val">18</span>
+          <span class="metric-lbl">VTU Branches</span>
+        </div>
+        <div class="hero-metric-item">
+          <span class="metric-val">100%</span>
+          <span class="metric-lbl">Free Open Access</span>
+        </div>
+        <div class="hero-metric-item">
+          <span class="metric-val">99.8%</span>
+          <span class="metric-lbl">Verified Syllabus</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll Down Prompt -->
+    <div class="hero-scroll-indicator" onclick="document.getElementById('explore').scrollIntoView({behavior: 'smooth'})">
+      <div class="mouse-scroll-icon">
+        <div class="mouse-wheel-dot"></div>
+      </div>
+      <span>Scroll to Enter</span>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 2: EXPLORE LIBRARY & 24 ACADEMIC CATEGORIES
+       ========================================================================= -->
+  <section class="section-wrapper" id="explore">
+    <div class="section-header-centered">
+      <div class="section-tag-pill">
+        <i data-lucide="book-open" style="width: 14px; height: 14px;"></i> Virtual Bookshelf
+      </div>
+      <h2 class="section-main-title">Explore Academic & Scientific Dimensions</h2>
+      <p class="section-lead-text">
+        Browse over 24 specialized categories spanning engineering disciplines, secondary board curricula, and cosmic sciences.
+      </p>
+    </div>
+
+    <!-- Category Group Filter Pills -->
+    <div class="category-filter-bar">
+      <button class="category-filter-btn active" data-group="all">All Disciplines</button>
+      <button class="category-filter-btn" data-group="vtu">VTU Engineering</button>
+      <button class="category-filter-btn" data-group="puc">PUC Streams</button>
+      <button class="category-filter-btn" data-group="school">SSLC / 10th</button>
+      <button class="category-filter-btn" data-group="science">Pure Sciences & AI</button>
+      <button class="category-filter-btn" data-group="exams">Competitive Exams</button>
+      <button class="category-filter-btn" data-group="general">Humanities & Classics</button>
+    </div>
+
+    <!-- 24 Interactive Category Cards -->
+    <div class="category-grid-container" id="categories-grid-container">
+      <!-- Dynamically populated by CatalogModule -->
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 3: VTU ENGINEERING LIBRARY PORTAL
+       ========================================================================= -->
+  <section class="section-wrapper" id="vtu">
+    <div class="vtu-container">
+      <div class="section-header-centered" style="margin-bottom: 34px;">
+        <div class="section-tag-pill" style="background: rgba(168, 85, 247, 0.2);">
+          <i data-lucide="cpu" style="width: 14px; height: 14px;"></i> VTU Visvesvaraya Repository
+        </div>
+        <h2 class="section-main-title">VTU Engineering Academic Library</h2>
+        <p class="section-lead-text">
+          Prescribed CBCS scheme textbooks, reference materials, lecture notes, and question banks categorized by branch, semester, and official VTU subject code.
+        </p>
+      </div>
+
+      <!-- VTU Branch Tabs -->
+      <div class="vtu-branch-tabs">
+        <button class="vtu-branch-tab active" data-branch="Computer Science and Engineering">Computer Science & Engg (CSE)</button>
+        <button class="vtu-branch-tab" data-branch="Information Science and Engineering">Information Science (ISE)</button>
+        <button class="vtu-branch-tab" data-branch="Artificial Intelligence and Machine Learning">AI & Machine Learning (AIML)</button>
+        <button class="vtu-branch-tab" data-branch="Electronics and Communication Engineering">Electronics & Comm (ECE)</button>
+        <button class="vtu-branch-tab" data-branch="Electrical and Electronics Engineering">Electrical & Electronics (EEE)</button>
+        <button class="vtu-branch-tab" data-branch="Mechanical Engineering">Mechanical Engineering (ME)</button>
+        <button class="vtu-branch-tab" data-branch="Civil Engineering">Civil Engineering (CV)</button>
+        <button class="vtu-branch-tab" data-branch="First Year">1st Year (P-Cycle & C-Cycle)</button>
+      </div>
+
+      <!-- Semester Selector Bar -->
+      <div class="vtu-semester-bar">
+        <div class="semester-chips-group">
+          <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 700; margin-right: 6px;">SEMESTER:</span>
+          <button class="sem-chip active" data-sem="all">All Semesters</button>
+          <button class="sem-chip" data-sem="1">Sem 1</button>
+          <button class="sem-chip" data-sem="2">Sem 2</button>
+          <button class="sem-chip" data-sem="3">Sem 3</button>
+          <button class="sem-chip" data-sem="4">Sem 4</button>
+          <button class="sem-chip" data-sem="5">Sem 5</button>
+          <button class="sem-chip" data-sem="6">Sem 6</button>
+          <button class="sem-chip" data-sem="7">Sem 7</button>
+          <button class="sem-chip" data-sem="8">Sem 8</button>
+        </div>
+
+        <div class="vtu-official-links">
+          <a href="https://vtu.ac.in/en/syllabus/" target="_blank" rel="noopener noreferrer" class="vtu-portal-badge">
+            <i data-lucide="external-link" style="width: 12px; height: 12px;"></i> Official VTU Syllabus Portal
+          </a>
+        </div>
+      </div>
+
+      <!-- VTU Books Grid -->
+      <div class="vtu-books-grid" id="vtu-books-container">
+        <!-- Rendered dynamically by VtuModule -->
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 4: SCHOOL & PUC LIBRARY (SSLC 10th & PUC 1st/2nd)
+       ========================================================================= -->
+  <section class="section-wrapper" id="puc">
+    <div class="puc-school-wrapper">
+      <div class="section-header-centered" style="margin-bottom: 28px;">
+        <div class="section-tag-pill" style="background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan);">
+          <i data-lucide="award" style="width: 14px; height: 14px;"></i> Karnataka State Board & NCERT
+        </div>
+        <h2 class="section-main-title">School & Pre-University Library</h2>
+        <p class="section-lead-text">
+          Authorized textbooks, chapter-wise solutions, and 10-year model question banks for Karnataka SSLC (10th) and PUC students.
+        </p>
+      </div>
+
+      <!-- Main Switcher: PUC vs SSLC -->
+      <div class="puc-main-nav">
+        <button class="puc-tab-btn active" data-level="puc">
+          <i data-lucide="book-marked"></i> Karnataka PUC (1st & 2nd PUC)
+        </button>
+        <button class="puc-tab-btn" data-level="sslc">
+          <i data-lucide="file-check"></i> SSLC / 10th Standard Board
+        </button>
+      </div>
+
+      <!-- Stream Selector Pills -->
+      <div class="puc-stream-selector" id="puc-stream-selector-container">
+        <button class="stream-pill active" data-stream="all">All PUC Streams</button>
+        <button class="stream-pill" data-stream="PCMB">PCMB Science</button>
+        <button class="stream-pill" data-stream="PCMC">PCMC Science</button>
+        <button class="stream-pill" data-stream="Commerce">Commerce</button>
+        <button class="stream-pill" data-stream="Arts">Arts</button>
+      </div>
+
+      <!-- Books Grid -->
+      <div class="vtu-books-grid" id="puc-books-container">
+        <!-- Rendered dynamically by PucSchoolModule -->
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 5: SCIENCE & KNOWLEDGE UNIVERSE
+       ========================================================================= -->
+  <section class="section-wrapper" id="science">
+    <div class="section-header-centered">
+      <div class="section-tag-pill" style="background: rgba(192, 132, 252, 0.2);">
+        <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i> Frontier Discoveries
+      </div>
+      <h2 class="section-main-title">Science & Knowledge Universe</h2>
+      <p class="section-lead-text">
+        From quantum mechanics and astrophysics to deep neural networks, philosophy, and timeless world literature.
+      </p>
+    </div>
+
+    <div class="vtu-books-grid" id="science-universe-grid">
+      <!-- Populated dynamically by CatalogModule -->
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 6: FEATURED BOOKS WITH 3D HOVER
+       ========================================================================= -->
+  <section class="section-wrapper" id="featured">
+    <div class="section-header-centered">
+      <div class="section-tag-pill">
+        <i data-lucide="star" style="width: 14px; height: 14px;"></i> Curated Essentials
+      </div>
+      <h2 class="section-main-title">Featured Masterpieces</h2>
+      <p class="section-lead-text">
+        Highlighted academic cornerstones and international scientific classics with interactive 3D reading tools.
+      </p>
+    </div>
+
+    <div class="vtu-books-grid" id="featured-books-grid">
+      <!-- Rendered dynamically by CatalogModule -->
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 9: PERSONALIZED STUDENT DASHBOARD (SYNAPTIX AESTHETIC)
+       Exact replica of the user provided reference image!
+       ========================================================================= -->
+  <section class="section-wrapper" id="dashboard">
+    <div class="section-header-centered" style="margin-bottom: 20px;">
+      <div class="section-tag-pill">
+        <i data-lucide="activity" style="width: 14px; height: 14px;"></i> Academic Command Center
+      </div>
+      <h2 class="section-main-title">Personalized Knowledge Dashboard</h2>
+      <p class="section-lead-text">
+        Track study hours, comprehension precision, active courses, and reading history in real time.
+      </p>
+    </div>
+
+    <!-- Synaptix UI Container -->
+    <div class="synaptix-dashboard-container">
+      <!-- Left Sidebar -->
+      <aside class="synaptix-sidebar">
+        <div>
+          <div class="synaptix-sidebar-brand">
+            <div class="synaptix-logo-icon">
+              <i data-lucide="cpu"></i>
+            </div>
+            <span class="synaptix-brand-title">Synaptix</span>
+          </div>
+
+          <ul class="synaptix-nav-list">
+            <li class="synaptix-nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</li>
+            <li class="synaptix-nav-item" onclick="window.LibraryApp.searchModule.openSearch('AI')"><i data-lucide="sparkles"></i> AI Tools</li>
+            <li class="synaptix-nav-item" onclick="document.getElementById('synaptix-performance-chart').scrollIntoView({behavior: 'smooth'})"><i data-lucide="bar-chart-2"></i> Analytics</li>
+            <li class="synaptix-nav-item" onclick="window.location.hash='#vtu'"><i data-lucide="box"></i> Data Models</li>
+            <li class="synaptix-nav-item" onclick="window.LibraryApp.showToast('Automated study schedules synced!')"><i data-lucide="zap"></i> Automation</li>
+            <li class="synaptix-nav-item" onclick="window.LibraryApp.authModule.openAuthModal()"><i data-lucide="settings"></i> Settings</li>
+          </ul>
+        </div>
+
+        <!-- Glowing "Go Pro" Orb Widget (from reference image) -->
+        <div class="synaptix-go-pro-widget">
+          <div class="go-pro-sphere"></div>
+          <h4 class="go-pro-title">Go Pro</h4>
+          <p class="go-pro-sub">Upgrade to Pro</p>
+        </div>
+      </aside>
+
+      <!-- Main Dashboard Viewport -->
+      <main class="synaptix-main-viewport">
+        <!-- Top Search & Actions Strip -->
+        <div class="synaptix-top-header">
+          <div class="synaptix-search-bar trigger-search-modal">
+            <i data-lucide="search" style="color: var(--text-dim); width: 16px; height: 16px;"></i>
+            <input type="text" placeholder="Search AI tools, models, or data..." readonly />
+          </div>
+
+          <div class="synaptix-top-actions">
+            <span class="pill-ai-active">
+              <span class="pulse-dot"></span> AI Active
+            </span>
+            <button class="btn-generate-new" onclick="window.LibraryApp.openSuggestionModal()">
+              Generate New
+            </button>
+          </div>
+        </div>
+
+        <!-- Greeting Block -->
+        <div class="synaptix-welcome-block">
+          <h2 class="synaptix-welcome-title">Welcome back, Alex</h2>
+          <p class="synaptix-welcome-subtitle">Here's what's happening with your study sessions today</p>
+        </div>
+
+        <!-- 4 Metric Cards (AI Usage, Outputs, Precision, Courses) -->
+        <div class="synaptix-metrics-grid">
+          <!-- Card 1: AI Usage -->
+          <div class="synaptix-metric-card">
+            <div class="metric-card-top">
+              <div class="metric-icon-pill">
+                <i data-lucide="activity"></i>
+              </div>
+              <canvas id="sparkline-usage" class="metric-sparkline-canvas" width="90" height="30"></canvas>
+            </div>
+            <div>
+              <span class="metric-card-lbl">AI Usage</span>
+              <div class="metric-card-val-row">
+                <span class="metric-big-number" id="metric-ai-usage">24.5K</span>
+                <span class="metric-change-badge">+12.5% this month</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Outputs -->
+          <div class="synaptix-metric-card">
+            <div class="metric-card-top">
+              <div class="metric-icon-pill">
+                <i data-lucide="sparkles"></i>
+              </div>
+              <canvas id="sparkline-outputs" class="metric-sparkline-canvas" width="90" height="30"></canvas>
+            </div>
+            <div>
+              <span class="metric-card-lbl">Outputs</span>
+              <div class="metric-card-val-row">
+                <span class="metric-big-number" id="metric-outputs">1,847</span>
+                <span class="metric-change-badge">+8.2% this month</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Precision -->
+          <div class="synaptix-metric-card">
+            <div class="metric-card-top">
+              <div class="metric-icon-pill">
+                <i data-lucide="target"></i>
+              </div>
+              <canvas id="sparkline-precision" class="metric-sparkline-canvas" width="90" height="30"></canvas>
+            </div>
+            <div>
+              <span class="metric-card-lbl">Precision</span>
+              <div class="metric-card-val-row">
+                <span class="metric-big-number" id="metric-precision">98.5%</span>
+                <span class="metric-change-badge">+2.1% this month</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Active Modules -->
+          <div class="synaptix-metric-card">
+            <div class="metric-card-top">
+              <div class="metric-icon-pill">
+                <i data-lucide="book-open"></i>
+              </div>
+              <canvas id="sparkline-courses" class="metric-sparkline-canvas" width="90" height="30"></canvas>
+            </div>
+            <div>
+              <span class="metric-card-lbl">Modules</span>
+              <div class="metric-card-val-row">
+                <span class="metric-big-number" id="metric-courses">12</span>
+                <span class="metric-change-badge">+3 active</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Middle Row: AI Performance Index + Speedometer Gauge -->
+        <div class="synaptix-charts-row">
+          <!-- Line Chart Panel -->
+          <div class="synaptix-chart-panel">
+            <div class="chart-panel-header">
+              <div>
+                <h3 class="chart-panel-title">AI Performance Index</h3>
+                <div class="chart-panel-stat-highlight">
+                  <span>$64,345</span>
+                  <span class="metric-change-badge" style="font-size: 0.85rem;">+14.3%</span>
+                </div>
+              </div>
+              <button style="background: transparent; color: var(--text-muted); cursor: pointer;">
+                <i data-lucide="maximize-2" style="width: 16px; height: 16px;"></i>
+              </button>
+            </div>
+
+            <div class="chart-canvas-wrapper">
+              <canvas id="synaptix-performance-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- Speedometer Radial Arc Gauge -->
+          <div class="synaptix-chart-panel synaptix-gauge-card">
+            <h3 class="chart-panel-title" style="margin-bottom: 6px;">AI Confidence Index</h3>
+            
+            <div class="gauge-canvas-wrapper">
+              <canvas id="synaptix-gauge-canvas" width="190" height="120"></canvas>
+              <div class="gauge-center-val">85</div>
+            </div>
+
+            <div class="gauge-legend-row">
+              <span><span class="legend-bullet bullet-yellow"></span> Performance 24%</span>
+              <span><span class="legend-bullet bullet-cyan"></span> Efficiency 27%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reading History & Saved Bookmarks Section -->
+        <div style="margin-top: 24px;">
+          <h4 style="font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 12px;">Active Reading Sessions</h4>
+          <div class="synaptix-reading-list-strip" id="synaptix-history-list">
+            <!-- Dynamically populated by DashboardModule -->
+          </div>
+        </div>
+
+        <div style="margin-top: 30px;">
+          <h4 style="font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 12px;">Saved Bookmarks & Study Notes</h4>
+          <div id="synaptix-bookmarks-list">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 10: LIBRARY MANAGEMENT & ADMINISTRATOR CONSOLE
+       ========================================================================= -->
+  <section class="section-wrapper" id="admin">
+    <div class="section-header-centered" style="margin-bottom: 24px;">
+      <div class="section-tag-pill" style="background: rgba(168, 85, 247, 0.2);">
+        <i data-lucide="shield" style="width: 14px; height: 14px;"></i> Administration Console
+      </div>
+      <h2 class="section-main-title">Digital Library Management System</h2>
+      <p class="section-lead-text">
+        Curate open-access repositories, manage VTU syllabus updates, review student requests, and track reading analytics.
+      </p>
+    </div>
+
+    <!-- Administrative Quick Stats Strip -->
+    <div class="hero-metrics-strip" style="max-width: 100%; margin-bottom: 30px;">
+      <div class="hero-metric-item">
+        <span class="metric-val" id="admin-stat-total-books">27</span>
+        <span class="metric-lbl">Total Cataloged Titles</span>
+      </div>
+      <div class="hero-metric-item">
+        <span class="metric-val" id="admin-stat-total-users">3</span>
+        <span class="metric-lbl">Registered Scholars</span>
+      </div>
+      <div class="hero-metric-item">
+        <span class="metric-val" id="admin-stat-total-reads">142,000</span>
+        <span class="metric-lbl">Cumulative Page Reads</span>
+      </div>
+      <div class="hero-metric-item">
+        <span class="metric-val" id="admin-stat-open-access">25</span>
+        <span class="metric-lbl">Open-Access Books</span>
+      </div>
+    </div>
+
+    <!-- Management Controls Header -->
+    <div class="admin-header-actions">
+      <button class="btn-primary-glow" id="btn-open-add-book">
+        <i data-lucide="plus-circle"></i> Add New Book to Catalog
+      </button>
+      <button class="btn-secondary-glass" onclick="window.LibraryApp.adminModule.loadAdminData()">
+        <i data-lucide="refresh-cw"></i> Refresh Records
+      </button>
+    </div>
+
+    <!-- Catalog Management Table -->
+    <h3 style="color: #fff; font-size: 1.25rem; margin-bottom: 14px; font-weight: 700;">Catalog Inventory</h3>
+    <div class="admin-data-table-wrapper" style="margin-bottom: 40px;">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Title & Author</th>
+            <th>Category</th>
+            <th>Subject Code</th>
+            <th>Branch</th>
+            <th>Reads</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="admin-books-table-body">
+          <!-- Populated by AdminModule -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Users & Role Management Table -->
+    <h3 style="color: #fff; font-size: 1.25rem; margin-bottom: 14px; font-weight: 700;">User Roles & Authorization</h3>
+    <div class="admin-data-table-wrapper" style="margin-bottom: 40px;">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Role</th>
+            <th>Academic Stream</th>
+            <th>Joined</th>
+          </tr>
+        </thead>
+        <tbody id="admin-users-table-body">
+          <!-- Populated by AdminModule -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Student Suggestions Queue -->
+    <h3 style="color: #fff; font-size: 1.25rem; margin-bottom: 14px; font-weight: 700;">Student Book Requests</h3>
+    <div class="admin-data-table-wrapper">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Requested Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="admin-suggestions-body">
+          <!-- Populated by AdminModule -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 7: SMART BOOK SEARCH MODAL
+       ========================================================================= -->
+  <div class="search-modal-backdrop" id="search-modal">
+    <div class="search-modal-box">
+      <div class="search-input-header">
+        <i data-lucide="search"></i>
+        <input type="text" id="main-search-input" class="search-main-input" placeholder="Search by title, author, VTU code (e.g. 21CS32), or subject..." autocomplete="off" />
+        <button class="search-close-btn" id="search-modal-close">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="search-source-tabs">
+        <button class="search-source-tab active" data-source="internal">
+          <i data-lucide="database" style="width: 14px; height: 14px; display: inline;"></i> Verified Library Catalog
+        </button>
+        <button class="search-source-tab" data-source="openlibrary">
+          <i data-lucide="globe" style="width: 14px; height: 14px; display: inline;"></i> Worldwide Open Library API
+        </button>
+      </div>
+
+      <div class="search-results-container" id="search-results-list">
+        <!-- Results rendered dynamically by SearchModule -->
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       SECTION 8: ONLINE BOOK READER (FULLSCREEN MODAL)
+       ========================================================================= -->
+  <div class="reader-modal-fullscreen" id="reader-modal">
+    <!-- Top Control Bar -->
+    <header class="reader-top-bar">
+      <div class="reader-book-info">
+        <button class="reader-ctrl-btn" id="reader-close-btn">
+          <i data-lucide="arrow-left"></i> Exit Reader
+        </button>
+        <div>
+          <h3 class="reader-title-label" id="reader-title-display">Book Title</h3>
+          <p class="reader-author-label" id="reader-author-display">Author</p>
+        </div>
+      </div>
+
+      <div class="reader-controls-cluster">
+        <!-- Font Size -->
+        <button class="reader-ctrl-btn" id="reader-font-minus"><i data-lucide="minus"></i> A</button>
+        <button class="reader-ctrl-btn" id="reader-font-plus"><i data-lucide="plus"></i> A</button>
+
+        <!-- Theme Switchers -->
+        <button class="reader-ctrl-btn reader-theme-btn active" id="theme-dark-btn" title="Dark Cyberpunk">Dark</button>
+        <button class="reader-ctrl-btn reader-theme-btn" id="theme-light-btn" title="Light Paper">Light</button>
+        <button class="reader-ctrl-btn reader-theme-btn" id="theme-sepia-btn" title="Sepia Vintage">Sepia</button>
+
+        <!-- Bookmark -->
+        <button class="reader-ctrl-btn" id="reader-bookmark-btn" title="Bookmark this page">
+          <i data-lucide="bookmark"></i> Bookmark
+        </button>
+
+        <!-- Fullscreen -->
+        <button class="reader-ctrl-btn" id="reader-fullscreen-btn" title="Toggle Fullscreen">
+          <i data-lucide="maximize"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Reading Area -->
+    <div class="reader-body-layout" id="reader-viewport">
+      <!-- Left Table of Contents Sidebar -->
+      <aside class="reader-toc-sidebar" id="reader-toc-list">
+        <!-- Populated dynamically by ReaderModule -->
+      </aside>
+
+      <!-- Center Main Reading Surface -->
+      <main class="reader-viewport-main">
+        <article class="reader-page-paper" id="reader-content-body">
+          <!-- Chapter contents populated dynamically -->
+        </article>
+      </main>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <footer class="reader-bottom-nav">
+      <button class="reader-ctrl-btn" id="reader-prev-btn">
+        <i data-lucide="chevron-left"></i> Previous Page
+      </button>
+
+      <div style="display: flex; align-items: center;">
+        <span style="font-size: 0.84rem; color: var(--text-muted);">Page</span>
+        <input type="number" id="reader-page-input" value="1" min="1" max="1000" style="width: 50px; background: rgba(255,255,255,0.08); color: #fff; text-align: center; border-radius: 4px; margin: 0 8px; padding: 4px;" />
+        <span style="font-size: 0.84rem; color: var(--text-muted);">of <span id="reader-total-pages">320</span></span>
+
+        <div class="reading-progress-track">
+          <div class="reading-progress-fill" id="reader-progress-bar-fill"></div>
+        </div>
+        <span style="font-size: 0.8rem; color: var(--text-purple); font-weight: 700;" id="reader-progress-percent">0%</span>
+      </div>
+
+      <button class="reader-ctrl-btn" id="reader-next-btn">
+        Next Page <i data-lucide="chevron-right"></i>
+      </button>
+    </footer>
+  </div>
+
+  <!-- =========================================================================
+       BOOK DETAILS INSPECTION MODAL
+       ========================================================================= -->
+  <div class="modal-backdrop-custom" id="book-detail-modal">
+    <div class="modal-card-box" style="max-width: 680px;">
+      <div class="modal-header-row">
+        <h3 class="modal-title-text" id="modal-book-title">Book Details</h3>
+        <button onclick="window.LibraryApp.closeModal('book-detail-modal')" style="background: transparent; color: var(--text-muted); font-size: 20px; cursor: pointer;">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div style="display: flex; gap: 24px; margin-bottom: 24px; flex-wrap: wrap;">
+        <img id="modal-book-cover" src="" alt="Book Cover" style="width: 140px; height: 195px; border-radius: var(--radius-md); object-fit: cover; box-shadow: 0 10px 25px rgba(0,0,0,0.6);" />
+        <div style="flex: 1; min-width: 240px;">
+          <p id="modal-book-author" style="color: var(--text-purple); font-weight: 600; margin-bottom: 12px; font-size: 0.95rem;"></p>
+          <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; color: var(--text-muted);">
+            <div><strong>Academic Code:</strong> <span id="modal-book-subject-code" style="color: #67e8f9;"></span></div>
+            <div><strong>Category:</strong> <span id="modal-book-category"></span></div>
+            <div><strong>Branch / Stream:</strong> <span id="modal-book-branch"></span></div>
+            <div><strong>Standard ISBN:</strong> <span id="modal-book-isbn"></span></div>
+            <div><strong>Extent:</strong> <span id="modal-book-pages"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 8px;">Synopsis & Syllabus Alignment</h4>
+      <p id="modal-book-desc" style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 24px;"></p>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button class="btn-primary-glow" id="modal-btn-read" style="padding: 10px 24px; font-size: 0.9rem;">
+          <i data-lucide="book-open"></i> Open In Online Reader
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       USER AUTHENTICATION MODAL (LOGIN / REGISTER / QUICK DEMO)
+       ========================================================================= -->
+  <div class="modal-backdrop-custom" id="auth-modal">
+    <div class="modal-card-box">
+      <div class="modal-header-row">
+        <h3 class="modal-title-text">Sign In to Knowledge Matrix</h3>
+        <button onclick="window.LibraryApp.authModule.closeAuthModal()" style="background: transparent; color: var(--text-muted); font-size: 20px; cursor: pointer;">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <form id="auth-login-form" onsubmit="event.preventDefault(); window.LibraryApp.authModule.login(document.getElementById('auth-email').value, document.getElementById('auth-pass').value);">
+        <div class="form-group-custom">
+          <label class="form-label-custom">Email Address</label>
+          <input type="email" id="auth-email" class="form-control-custom" placeholder="name@domain.edu" required />
+        </div>
+        <div class="form-group-custom">
+          <label class="form-label-custom">Password</label>
+          <input type="password" id="auth-pass" class="form-control-custom" placeholder="••••••••" required />
+        </div>
+
+        <button type="submit" class="btn-primary-glow" style="width: 100%; justify-content: center; margin-top: 10px;">
+          Authenticate
+        </button>
+      </form>
+
+      <!-- Quick 1-Click Demo Accounts -->
+      <div class="demo-account-buttons-row">
+        <button class="btn-demo-quick" onclick="window.LibraryApp.authModule.quickDemo('student')">
+          Demo Student (Alex)
+        </button>
+        <button class="btn-demo-quick" onclick="window.LibraryApp.authModule.quickDemo('librarian')">
+          Demo Librarian
+        </button>
+        <button class="btn-demo-quick" onclick="window.LibraryApp.authModule.quickDemo('admin')">
+          Demo Admin
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       ADMIN: ADD NEW BOOK MODAL
+       ========================================================================= -->
+  <div class="modal-backdrop-custom" id="admin-add-book-modal">
+    <div class="modal-card-box" style="max-width: 650px;">
+      <div class="modal-header-row">
+        <h3 class="modal-title-text">Catalog New Academic Book</h3>
+        <button id="close-add-book-modal" style="background: transparent; color: var(--text-muted); font-size: 20px; cursor: pointer;">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <form id="admin-add-book-form">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="form-group-custom">
+            <label class="form-label-custom">Book Title *</label>
+            <input type="text" name="title" class="form-control-custom" required />
+          </div>
+          <div class="form-group-custom">
+            <label class="form-label-custom">Author(s) *</label>
+            <input type="text" name="author" class="form-control-custom" required />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="form-group-custom">
+            <label class="form-label-custom">Academic Level *</label>
+            <select name="academicLevel" class="form-control-custom">
+              <option value="vtu">VTU Engineering</option>
+              <option value="puc">PUC (1st & 2nd)</option>
+              <option value="sslc">SSLC / 10th</option>
+              <option value="science">Pure Science Universe</option>
+              <option value="general">General / Classics</option>
+            </select>
+          </div>
+          <div class="form-group-custom">
+            <label class="form-label-custom">Category *</label>
+            <input type="text" name="category" class="form-control-custom" placeholder="e.g. Computer Science" required />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+          <div class="form-group-custom">
+            <label class="form-label-custom">Branch / Stream</label>
+            <input type="text" name="branch" class="form-control-custom" placeholder="e.g. CSE / PCMB" />
+          </div>
+          <div class="form-group-custom">
+            <label class="form-label-custom">Semester (1-8)</label>
+            <input type="number" name="semester" min="1" max="8" class="form-control-custom" />
+          </div>
+          <div class="form-group-custom">
+            <label class="form-label-custom">Subject Code</label>
+            <input type="text" name="subjectCode" class="form-control-custom" placeholder="e.g. 21CS32" />
+          </div>
+        </div>
+
+        <div class="form-group-custom">
+          <label class="form-label-custom">Cover Image URL</label>
+          <input type="url" name="coverImage" class="form-control-custom" placeholder="https://images.unsplash.com/..." />
+        </div>
+
+        <div class="form-group-custom">
+          <label class="form-label-custom">Description & Syllabus Coverage *</label>
+          <textarea name="description" rows="3" class="form-control-custom" required></textarea>
+        </div>
+
+        <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #fff; cursor: pointer;">
+            <input type="checkbox" name="isOpenAccess" value="true" checked />
+            Verified Open Access
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #fff; cursor: pointer;">
+            <input type="checkbox" name="isFeatured" value="true" />
+            Feature on Homepage
+          </label>
+        </div>
+
+        <button type="submit" class="btn-primary-glow" style="width: 100%; justify-content: center;">
+          Submit to Public Catalog
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       STUDENT: BOOK REQUEST SUGGESTION MODAL
+       ========================================================================= -->
+  <div class="modal-backdrop-custom" id="book-suggestion-modal">
+    <div class="modal-card-box">
+      <div class="modal-header-row">
+        <h3 class="modal-title-text">Request Academic Book</h3>
+        <button onclick="window.LibraryApp.closeModal('book-suggestion-modal')" style="background: transparent; color: var(--text-muted); font-size: 20px; cursor: pointer;">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <form id="book-suggestion-form">
+        <div class="form-group-custom">
+          <label class="form-label-custom">Book Title / Subject Code *</label>
+          <input type="text" id="sug-title" class="form-control-custom" required />
+        </div>
+        <div class="form-group-custom">
+          <label class="form-label-custom">Author(s)</label>
+          <input type="text" id="sug-author" class="form-control-custom" />
+        </div>
+        <div class="form-group-custom">
+          <label class="form-label-custom">Category / VTU Branch</label>
+          <input type="text" id="sug-category" class="form-control-custom" />
+        </div>
+        <div class="form-group-custom">
+          <label class="form-label-custom">Reason / Syllabus Need</label>
+          <textarea id="sug-reason" rows="3" class="form-control-custom" placeholder="Why should this book be cataloged for VTU/PUC students?"></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary-glow" style="width: 100%; justify-content: center;">
+          Submit Request to Librarians
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       TOAST NOTIFICATION CONTAINER
+       ========================================================================= -->
+  <div id="toast-container"></div>
+
+  <!-- =========================================================================
+       FOOTER
+       ========================================================================= -->
+  <footer class="site-footer">
+    <div class="footer-content-grid">
+      <div>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+          <div class="brand-icon-wrapper" style="width: 32px; height: 32px; font-size: 16px;">
+            <i data-lucide="layers"></i>
+          </div>
+          <span style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 800; color: #fff;">SYNAPTIX LIBRARY</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; max-width: 360px;">
+          Karnataka's premier 3D digital public library and educational management system. Fostering equitable, open-access education for VTU, PUC, and research scholars worldwide.
+        </p>
+      </div>
+
+      <div>
+        <h4 class="footer-col-title">Academic Portals</h4>
+        <ul class="footer-links-list">
+          <li><a href="#vtu">VTU Engineering CSE / ISE</a></li>
+          <li><a href="#vtu">VTU Mechanical & Civil</a></li>
+          <li><a href="#puc">Karnataka 2nd PUC PCMB</a></li>
+          <li><a href="#puc">SSLC 10th Question Bank</a></li>
+          <li><a href="#explore">Diploma Technical Repositories</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-col-title">Universal Science</h4>
+        <ul class="footer-links-list">
+          <li><a href="#science">Space & Cosmology</a></li>
+          <li><a href="#science">Quantum Physics</a></li>
+          <li><a href="#science">Artificial Intelligence & ML</a></li>
+          <li><a href="#science">Project Gutenberg Classics</a></li>
+          <li><a href="#science">DOAB Open Access</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-col-title">Scholarly Systems</h4>
+        <ul class="footer-links-list">
+          <li><a href="#dashboard">Student Progress Matrix</a></li>
+          <li><a href="#admin">Librarian Management</a></li>
+          <li><a href="javascript:void(0)" onclick="window.LibraryApp.openSuggestionModal()">Request New Text</a></li>
+          <li><a href="https://vtu.ac.in/" target="_blank" rel="noopener noreferrer">Official VTU Portal</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom-strip">
+      <span>&copy; 2026 Digital Public Library & Academic Management System. Open Educational Resource.</span>
+      <span>Engineered with Three.js • GSAP ScrollTrigger • Lenis • Express & MongoDB</span>
+    </div>
+  </footer>
+
+  <!-- Core Application Scripts -->
+  <script src="js/3d/library-scene.js"></script>
+  <script src="js/modules/api.js"></script>
+  <script src="js/modules/auth.js"></script>
+  <script src="js/modules/catalog.js"></script>
+  <script src="js/modules/vtu.js"></script>
+  <script src="js/modules/puc.js"></script>
+  <script src="js/modules/search.js"></script>
+  <script src="js/modules/reader.js"></script>
+  <script src="js/modules/dashboard.js"></script>
+  <script src="js/modules/admin.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
